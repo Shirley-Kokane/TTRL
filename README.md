@@ -5,21 +5,23 @@
 [![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2504.16084)  [![Github](https://img.shields.io/badge/TTRL-000000?style=for-the-badge&logo=github&logoColor=000&logoColor=white)](https://github.com/PRIME-RL/TTRL)
 [![Wandb Log of AIME](https://img.shields.io/badge/Wandb%20Log%20of%20AIME-%2300B4AB?style=for-the-badge&logo=weightsandbiases&logoColor=white&labelColor=000000)](https://wandb.ai/truman-yx-zuo-nlp/TTRL/workspace?nw=nwusertrumanyxzuo)
 
+</div>
 
 <div align="center" style="font-family: Arial, sans-serif;">
   <p>
     <a href="#news" style="text-decoration: none; font-weight: bold;">🎉 News</a> •
     <a href="#introduction" style="text-decoration: none; font-weight: bold;">📖 Introduction</a> •
-    <a href="#evaluation" style="text-decoration: none; font-weight: bold;">📃 Evaluation</a>
+    <a href="#main-results" style="text-decoration: none; font-weight: bold;">📊 Main Results</a>
   </p>
   <p>
     <a href="#getting-started" style="text-decoration: none; font-weight: bold;">✨ Getting Started</a> •
     <a href="#contact" style="text-decoration: none; font-weight: bold;">📨 Contact</a> •
-    <a href="#citation" style="text-decoration: none; font-weight: bold;">🎈 Citation</a>
+    <a href="#citation" style="text-decoration: none; font-weight: bold;">🎈 Citation</a> •
+    <a href="#star-history" style="text-decoration: none; font-weight: bold;">🌟 Star History</a>
   </p>
 </div>
 
-</div>
+> Welcome to the Era of Experience.  --David Silver, Richard S. Sutton
 
 # 🎉News
 
@@ -31,9 +33,8 @@
 
 # 📖Introduction
 
-We investigate Reinforcement Learning (RL) on data without explicit labels for reasoning tasks in Large Language Models (LLMs).
-The core challenge of the problem is reward estimation during inference while not having access to ground-truth information.
-While this setting appears elusive, we find that common practices in Test-Time Scaling (TTS), such as majority voting, yield surprisingly effective rewards suitable for driving RL training.
+**We investigate Reinforcement Learning (RL) on data without explicit labels for reasoning tasks in Large Language Models (LLMs).**
+The core challenge of the problem is reward estimation during inference while not having access to ground-truth information. While this setting appears elusive, we find that common practices in Test-Time Scaling (TTS), such as majority voting, yield surprisingly effective rewards suitable for driving RL training.
 
 <p align="center">
    <img src="figs/teaser.png" alt="Performance and settings of TTRL." style="width: 95%;">
@@ -45,14 +46,14 @@ While this setting appears elusive, we find that common practices in Test-Time S
 </p>
 
 
-# 📃Evaluation
+# 📊Main Results
 
 Our experiments demonstrate that TTRL consistently improves performance across a variety of tasks and models. Notably, TTRL boosts the `pass@1` performance of Qwen-2.5-Math-7B by approximately 211% on `AIME 2024` with only unlabeled test data.
 
 Furthermore, although TTRL is only supervised by the `maj@n` metric, TTRL has demonstrated performance to consistently surpass this upper limit of the initial model, and approach the performance of models trained directly on test data with ground-truth labels.
 
 <p align="center">
-   <img src="figs/results.png" alt="Overview of TTRL." style="width: 95%;">
+   <img src="figs/results.png" alt="Main results of TTRL." style="width: 60%;">
 </p>
 
 
@@ -61,7 +62,7 @@ Furthermore, although TTRL is only supervised by the `maj@n` metric, TTRL has de
 You can reproduce the results on `AIME 2024` with the following commands:
 
 ```bash
-git clone git@github.com:PRIME-RL/TTRL.git
+git clone https://github.com/PRIME-RL/TTRL.git
 cd verl
 
 pip install -r requirements.txt
@@ -81,7 +82,7 @@ We additionally conducted three independent runs using the preview version of ou
 The implementation of TTRL can be achieved rapidly by simply modifying the reward function. Please refer to the following code snippet for details:
 
 <p align="center">
-   <img src="figs/ttrl_reward.png" alt="The pseudo-code of the majority voting reward function." style="width: 95%;">
+   <img src="figs/ttrl_reward.png" alt="The pseudo-code of the majority voting reward function." style="width: 60%;">
 </p>
 </details>
 
@@ -103,6 +104,6 @@ If you find TTRL helpful, please cite us.
 }
 ```
 
-# ⭐️Star History
+# 🌟Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=PRIME-RL/TTRL&type=Date)](https://www.star-history.com/#PRIME-RL/TTRL&Date)
