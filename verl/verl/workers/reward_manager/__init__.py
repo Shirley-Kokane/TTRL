@@ -17,3 +17,4 @@ from .dapo import DAPORewardManager
 from .naive import NaiveRewardManager
 from .prime import PrimeRewardManager
 from .ttrl import TTRLRewardManager
+from .diversity import DiversityRewardManager

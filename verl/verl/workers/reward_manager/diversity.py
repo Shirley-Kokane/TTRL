@@ -23,6 +23,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from verl import DataProto
 from verl.utils.reward_score.math_batch import compute_score_batched
 
+openai.api_key = os.environ.get("OPENAI_API_KEY")
+
+
 class DiversityRewardManager:
     def __init__(self, tokenizer, num_examine, compute_score, reward_fn_key="data_source", **reward_kwargs):
         self.tokenizer = tokenizer
@@ -41,11 +44,15 @@ class DiversityRewardManager:
         valid_response_lengths = attention_mask[:, prompt_len:].sum(dim=-1)
 
         responses_str = []
+        embedding_cache = {}
         for i in range(len(data)):
             valid_len = valid_response_lengths[i]
             valid_response_ids = response_ids[i][:valid_len]
             response_str = self.tokenizer.decode(valid_response_ids, skip_special_tokens=True)
             responses_str.append(response_str)
+            if response_str not in embedding_cache:
+                response = openai.embeddings.create(input=response_str, model="text-embedding-3-small")
+                embedding_cache[response_str] = response.data[0].embedding
 
         # 1. Compute original accuracy scores
         ground_truths = [item.non_tensor_batch["reward_model"].get("ground_truth", None) for item in data]
@@ -71,13 +78,6 @@ class DiversityRewardManager:
 
         # 2. Compute diversity scores
         openai.api_key = os.environ.get("OPENAI_API_KEY")
-
-        unique_responses = list(set(responses_str))
-        embedding_cache = {}
-        if unique_responses:
-            response = openai.embeddings.create(input=unique_responses, model="text-embedding-3-small")
-            for resp_str, embedding_data in zip(unique_responses, response.data):
-                embedding_cache[resp_str] = embedding_data.embedding
 
         prompt_to_indices = defaultdict(list)
         for idx, prompt in enumerate(prompts_str):
@@ -117,7 +117,7 @@ class DiversityRewardManager:
                 combined_score_dict["diversity_score"] = div_score
                 combined_scores.append(combined_score_dict)
             else:
-                combined_scores.append(acc_score + div_score)
+                combined_scores.append(0.75 * acc_score + 0.25 * div_score)
 
         return combined_scores
 

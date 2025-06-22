@@ -19,8 +19,12 @@ import os
 
 import hydra
 import ray
-
+from dotenv import load_dotenv
 from verl.trainer.ppo.ray_trainer import RayPPOTrainer
+
+load_dotenv()
+
+import wandb
 
 
 def get_custom_reward_fn(config):
@@ -178,6 +182,10 @@ class TaskRunner:
             from verl.workers.reward_manager import TTRLRewardManager
 
             reward_manager_cls = TTRLRewardManager
+        elif reward_manager_name == "diversity":
+            from verl.workers.reward_manager import DiversityRewardManager
+
+            reward_manager_cls = DiversityRewardManager
         else:
             raise NotImplementedError
 
