@@ -186,6 +186,14 @@ class TaskRunner:
             from verl.workers.reward_manager import DiversityRewardManager
 
             reward_manager_cls = DiversityRewardManager
+        elif reward_manager_name == "diversity_avg":
+            from verl.workers.reward_manager import DiversityAvgRewardManager
+
+            reward_manager_cls = DiversityAvgRewardManager
+        elif reward_manager_name == "contrastive":
+            from verl.workers.reward_manager import ContrastiveRewardManager
+
+            reward_manager_cls = ContrastiveRewardManager
         else:
             raise NotImplementedError
 

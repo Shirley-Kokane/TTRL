@@ -18,3 +18,5 @@ from .naive import NaiveRewardManager
 from .prime import PrimeRewardManager
 from .ttrl import TTRLRewardManager
 from .diversity import DiversityRewardManager
+from .contrastive import ContrastiveRewardManager
+from .diversity_avg import DiversityAvgRewardManager

@@ -27,7 +27,7 @@ from verl.utils.reward_score.math_batch import compute_score_batched
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 
-class DiversityRewardManager:
+class DiversityAvgRewardManager:
     def __init__(self, tokenizer, num_examine, compute_score, reward_fn_key="data_source", mode="train", **reward_kwargs):
         self.tokenizer = tokenizer
         self.num_examine = num_examine
@@ -84,7 +84,8 @@ class DiversityRewardManager:
         prompt_to_indices = defaultdict(list)
         for idx, prompt in enumerate(prompts_str):
             prompt_to_indices[prompt].append(idx)
-
+            
+        print("Reaching verify")
         diversity_scores = [0.0] * len(responses_str)
         for indices in prompt_to_indices.values():
             if len(indices) <= 1:
@@ -92,19 +93,21 @@ class DiversityRewardManager:
 
             group_completions = [responses_str[i] for i in indices]
             embeddings = [embedding_cache[completion] for completion in group_completions]
-
-            sim_matrix = cosine_similarity(embeddings)
-            print("Sim matrix: ", sim_matrix.shape)
-            n = len(embeddings)
-
+            
+            # Calculate average embedding for all completions of this prompt
+            avg_embedding = np.mean(embeddings, axis=0)
+            
+            # Calculate cosine similarity between each completion and the average embedding
             for idx, i in enumerate(indices):
-                if n > 1:
-                    avg_sim = (np.sum(sim_matrix[idx]) - 1) / (n - 1)
-                else:
-                    avg_sim = 0.0
-
-                if not np.isnan(avg_sim):
-                    diversity_scores[i] = 1 - abs(avg_sim)
+                completion_embedding = embeddings[idx]
+                # Compute cosine similarity between this completion and the average embedding
+                similarity = np.dot(completion_embedding, avg_embedding) / (
+                    np.linalg.norm(completion_embedding) * np.linalg.norm(avg_embedding)
+                )
+                
+                if not np.isnan(similarity):
+                    # Diversity score is 1 minus the similarity (higher similarity = lower diversity)
+                    diversity_scores[i] = 1 - abs(similarity)
 
         del embedding_cache
         # 3. Combine scores
